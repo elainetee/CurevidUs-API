@@ -11,34 +11,60 @@ use App\Models\User;
 
 class UserController extends Controller
 {
+    public function index()
+    {
+        $user = JWTAuth::user();
+        $user = User::get(['id','role_id', 'name', 'email','emergency_contact_person_id','quarantine_status','vac_status']);
+        return $user;
+    }
+
+    public function delete($id)
+    {
+        $user = User::find($id);
+        if (isset($user)) {
+            $user->delete();
+
+            return response()->json(['success' => true, 'message' => 'User deleted successfully']);
+        } else 
+        
+        return response()->json('Cannot find selected user', 400);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255' . $id,
+            'email' => 'required|string|email|max:255',
+            'role_id' => 'required' ,
+            'tel_no' => 'required' ,
+        ]);
+        if ($validator->fails()) {
+
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+        $user = User::find($id);
+        $user->update($request->all());
+
+        return response()->json(compact('user'), 201);
+    }
+
     public function authenticate(Request $request)
     {
-        // $validator = Validator::make($request->all(), [
-        //     'email' => 'required|email',
-        //     'password' => 'required|string|min:6',
-        // ]);
-        // if ($validator->fails()) {
-        //     return response()->json($validator->errors(), 422);
-        // }
-        // if (! $token = auth()->attempt($validator->validated())) {
-        //     return response()->json(['error' => 'Unauthorized'], 401);
-        // }
-        // return $this->createNewToken($token);
 
-            $credentials = $request->only('email', 'password');
-    
-            try {
-                if (!$token = JWTAuth::attempt($credentials)) {
-    
-                    return response()->json(['error' => 'Invalid credentials'], 400);
-                }
-            } catch (JWTException $e) {
-    
-                return response()->json(['error' => 'Could not create token'], 500);
+        $credentials = $request->only('email', 'password');
+
+        try {
+            if (!$token = JWTAuth::attempt($credentials)) {
+
+                return response()->json(['error' => 'Invalid credentials'], 400);
             }
-    
-            return response()->json(compact('token'), 201);
+        } catch (JWTException $e) {
+
+            return response()->json(['error' => 'Could not create token'], 500);
         }
+
+        return response()->json(compact('token'), 201);
+    }
 
     public function register(Request $request)
     {
@@ -47,6 +73,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:100|unique:users',
             'password' => 'required|string|min:6',
             'role_id' => 'required',
+            'tel_no' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
@@ -56,6 +83,7 @@ class UserController extends Controller
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
             'role_id' => $request->get('role_id'),
+            'tel_no' => $request->get('tel_no'),
         ]);
         return response()->json([
             'message' => 'User successfully registered',
