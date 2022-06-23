@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('role_id');
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('tel_no')->unique();
             $table->string('password');
             $table->unsignedBigInteger('emergency_contact_person_id')->nullable();
             $table->timestamp('quarantine_status')->nullable();
