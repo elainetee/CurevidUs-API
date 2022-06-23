@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,11 +19,17 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
+//user
 Route::post('login', [UserController::class, 'authenticate']);
 Route::post('register', [UserController::class, 'register']);
 Route::get('alluser', [UserController::class, 'index']);
 Route::delete('/user/{id}', [UserController::class, 'delete']);
 Route::patch('/user/update/{id}', [UserController::class, 'update']);
+
+//post
+Route::delete('/post/delete/{id}', [PostController::class, 'delete']);
+Route::get('post/{id}', [PostController::class, 'index']);
+Route::post('post/create/{id}', [PostController::class, 'create']);
+Route::patch('/post/update/{id}', [PostController::class, 'update']);
 
 
