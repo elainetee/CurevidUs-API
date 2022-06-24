@@ -12,9 +12,16 @@ class PostController extends Controller
 
     public function index($user_id)
     {
-        $posts = Post::where('user_id', $user_id)->get();
+        $posts = Post::where('user_id', $user_id)->orderBy('id','DESC')->get();
 
         return $posts;
+    }
+
+    public function findPost($id)
+    {
+        $post = Post::where('id', $id)->get();
+
+        return $post;
     }
 
     // public function create($user_id)
@@ -28,7 +35,7 @@ class PostController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'content' => 'required|string',
-            'visibility' => 'required|string',
+            // 'visibility' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -50,7 +57,7 @@ class PostController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'content' => 'required|string',
-            'visibility' => 'required|string',
+            // 'visibility' => 'required|string',
         ]);
         if ($validator->fails()) {
 

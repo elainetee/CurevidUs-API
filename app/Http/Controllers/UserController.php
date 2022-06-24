@@ -8,13 +8,21 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+    public function details($id)
+    {
+        $user = User::firstWhere('id', $id);
+        $user->role_capitalized = Str::ucfirst($user->role);
+
+        return $user;}
+
     public function index()
     {
         $user = JWTAuth::user();
-        $user = User::get(['id','role_id', 'name', 'email','emergency_contact_person_id','quarantine_status','vac_status']);
+        $user = User::get(['id','role_id', 'name', 'email','tel_no','emergency_contact_person_id','quarantine_status','vac_status']);
         return $user;
     }
 

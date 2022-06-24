@@ -25,11 +25,12 @@ Route::post('register', [UserController::class, 'register']);
 Route::get('alluser', [UserController::class, 'index']);
 Route::delete('/user/{id}', [UserController::class, 'delete']);
 Route::patch('/user/update/{id}', [UserController::class, 'update']);
+Route::get('/user', [UserController::class, 'getAuthenticatedUser']);
 
 //post
 Route::delete('/post/delete/{id}', [PostController::class, 'delete']);
 Route::get('post/{id}', [PostController::class, 'index']);
+Route::get('specificpost/{id}', [PostController::class, 'findPost']);
 Route::post('post/create/{id}', [PostController::class, 'create']);
 Route::patch('/post/update/{id}', [PostController::class, 'update']);
-
 
