@@ -14,8 +14,17 @@ class CreateConditionsTable extends Migration
     public function up()
     {
         Schema::create('conditions', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('condition_id');
+            $table->unsignedBigInteger('user_id');
+            $table->date('condition_date');
+            $table->string('condition_symptoms', 255)->nullable();
+            $table->string('condition_summary', 100);
             $table->timestamps();
+        });
+
+        Schema::table('conditions', function (Blueprint $table) {
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            
         });
     }
 
