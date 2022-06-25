@@ -12,18 +12,40 @@ use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
+    public function editProfile(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255' . $id,
+            'email' => 'required|string|email|max:255',
+            'tel_no' => 'required',
+        ]);
+        if ($validator->fails()) {
+
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+        $user = User::find($id);
+        $user->update($request->all());
+
+        return response()->json(compact('user'), 201);
+
+    }
+
     public function details($id)
     {
         $user = User::firstWhere('id', $id);
         $user->role_capitalized = Str::ucfirst($user->role);
 
-        return $user;}
+        return $user;
+    }
 
     public function index()
     {
-        $user = JWTAuth::user();
-        $user = User::get(['id','role_id', 'name', 'email','tel_no','emergency_contact_person_id','quarantine_status','vac_status']);
-        return $user;
+        $users = JWTAuth::user();
+        $users = User::get(['id', 'role_id', 'name', 'email', 'tel_no', 'emergency_contact_person_id', 'quarantine_status', 'vac_status']);
+        foreach ($users as $user) {
+            $user->setAttribute('role_name', $user->role->roleName());
+        }
+        return $users;
     }
 
     public function delete($id)
@@ -33,9 +55,9 @@ class UserController extends Controller
             $user->delete();
 
             return response()->json(['success' => true, 'message' => 'User deleted successfully']);
-        } else 
-        
-        return response()->json('Cannot find selected user', 400);
+        } else
+
+            return response()->json('Cannot find selected user', 400);
     }
 
     public function update(Request $request, $id)
@@ -43,8 +65,8 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255' . $id,
             'email' => 'required|string|email|max:255',
-            'role_id' => 'required' ,
-            'tel_no' => 'required' ,
+            'role_id' => 'required',
+            'tel_no' => 'required',
         ]);
         if ($validator->fails()) {
 
