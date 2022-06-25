@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ConditionController;
+use App\Http\Controllers\MedicineController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,4 +34,12 @@ Route::get('post/{id}', [PostController::class, 'index']);
 Route::post('post/create/{id}', [PostController::class, 'create']);
 Route::patch('/post/update/{id}', [PostController::class, 'update']);
 
+//condition
+Route::get('condition/{id}', [ConditionController::class, 'index']);
+Route::post('condition/create/{id}', [ConditionController::class, 'store']);
 
+//medicine
+Route::get('medicine', [MedicineController::class, 'index']);
+Route::post('medicine/store', [MedicineController::class, 'store']);
+Route::patch('medicine/update/{id}', [MedicineController::class, 'update']);
+Route::delete('medicine/delete/{id}', [MedicineController::class, 'delete']);
