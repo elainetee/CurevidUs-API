@@ -21,7 +21,7 @@ class CreateOrderMedicineTable extends Migration
 
         Schema::table('order_medicine', function (Blueprint $table) {
             $table->foreign('order_id')->references('order_id')->on('orders')->onDelete('cascade');
-            $table->foreign('medicine_id')->references('medicine_id')->on('medicine')->onDelete('cascade');
+            $table->foreign('medicine_id')->references('medicine_id')->on('medicines')->onDelete('cascade');
             
         });
     }

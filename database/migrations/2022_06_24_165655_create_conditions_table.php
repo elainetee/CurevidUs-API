@@ -18,6 +18,8 @@ class CreateConditionsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->date('condition_date');
             $table->string('condition_symptoms', 255)->nullable();
+            $table->string('temperature', 255)->nullable();
+            $table->string('oxygen_lvl', 255)->nullable();
             $table->string('condition_summary', 100);
             $table->timestamps();
         });
