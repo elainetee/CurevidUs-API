@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class PostController extends Controller
 {
@@ -23,7 +24,7 @@ class PostController extends Controller
 
     public function findPost($id)
     {
-        
+
         $post = Post::where('id', $id)->first();
         $post->duration = $post->created_at->diffForHumans();
         return $post;
@@ -31,7 +32,13 @@ class PostController extends Controller
 
     public function allPost()
     {
-        $posts= Post::get();
+        $posts = Post::orderBy('id', 'DESC')->get();
+        foreach ($posts as $p) {
+            // dd($p->created_at->diffForHumans());
+            $p->setAttribute('duration', Carbon::parse($p['created_at'])->diffForHumans());
+            // $p->setAttribute('duration', $p->created_at->diffForHumans());
+            $p->setAttribute('user_name', $p->user->userName());
+        }
         return $posts;
     }
 
@@ -69,7 +76,9 @@ class PostController extends Controller
             return response()->json($validator->errors()->toJson(), 400);
         }
         $post = Post::find($post_id);
-        $post->update($request->all());
+        $post->update([
+            'content' => $request->get('content'),
+        ]);
 
         return $post;
     }
