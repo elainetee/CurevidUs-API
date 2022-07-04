@@ -12,23 +12,34 @@ class PostController extends Controller
 
     public function index($user_id)
     {
-        $posts = Post::where('user_id', $user_id)->get();
-
+        $posts = Post::where('user_id', $user_id)->orderBy('id', 'DESC')->get();
+        // $posts->duration=$posts->created_at->diffForHumans();
+        foreach ($posts as $p) {
+            $p->setAttribute('duration', $p->created_at->diffForHumans());
+            $p->setAttribute('user_name', $p->user->userName());
+        }
         return $posts;
     }
 
-    // public function create($user_id)
-    // {
-    //     $posts = Post::create($request->all());
+    public function findPost($id)
+    {
+        
+        $post = Post::where('id', $id)->first();
+        $post->duration = $post->created_at->diffForHumans();
+        return $post;
+    }
 
-    //     return $posts;
-    // }
+    public function allPost()
+    {
+        $posts= Post::get();
+        return $posts;
+    }
 
     public function create(Request $request, $user_id)
     {
         $validator = Validator::make($request->all(), [
             'content' => 'required|string',
-            'visibility' => 'required|string',
+            // 'visibility' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -41,6 +52,7 @@ class PostController extends Controller
             'visibility' => $request->get('visibility'),
             'user_id' => $user_id,
         ]);
+        $post->duration = $post->created_at->diffForHumans();
 
         return response()->json(compact('post'), 201);
         // } else return response()->json('Fail to create company', 400);
@@ -50,7 +62,7 @@ class PostController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'content' => 'required|string',
-            'visibility' => 'required|string',
+            // 'visibility' => 'required|string',
         ]);
         if ($validator->fails()) {
 
