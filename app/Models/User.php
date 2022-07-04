@@ -70,6 +70,7 @@ class User extends Authenticatable implements JWTSubject
     public function userName()
     {
         return $this->name;
+    }
 
     public function condition()
     {
