@@ -14,6 +14,7 @@ class Post extends Model
         'photo',
         'content',
         'visibility',
+        'duration'
     ];
 
     public function user()
