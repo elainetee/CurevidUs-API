@@ -13,6 +13,12 @@ class MedicineController extends Controller
         return $medicine;
     }
 
+    public function index1($medicine_id)
+    {
+        $medicine = Medicine::find($medicine_id);
+        return $medicine;
+    }
+
     public function store(Request $request)
     {
         $request->validate([

@@ -40,6 +40,7 @@ Route::post('condition/create/{id}', [ConditionController::class, 'store']);
 
 //medicine
 Route::get('medicine', [MedicineController::class, 'index']);
+Route::get('medicine/{id}', [MedicineController::class, 'index1']);
 Route::post('medicine/store', [MedicineController::class, 'store']);
 Route::patch('medicine/update/{id}', [MedicineController::class, 'update']);
 Route::delete('medicine/delete/{id}', [MedicineController::class, 'delete']);
