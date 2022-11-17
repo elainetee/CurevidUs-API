@@ -6,6 +6,7 @@ use App\Http\Controllers\ConditionController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FriendshipController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,11 @@ Route::get('allpost', [PostController::class, 'allPost']);
 Route::get('specificpost/{id}', [PostController::class, 'findPost']);
 Route::post('post/create/{id}', [PostController::class, 'create']);
 Route::patch('/post/update/{id}', [PostController::class, 'update']);
+
+//comment
+Route::get('comment/{id}', [CommentController::class, 'index']);
+Route::post('comment/create/{id}', [CommentController::class, 'comment']);
+Route::delete('/comment/delete/{id}', [CommentController::class, 'delete']);
 
 //friend
 Route::post('friend/add/{id}', [FriendshipController::class, 'addFriend']);

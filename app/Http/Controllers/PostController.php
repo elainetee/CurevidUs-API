@@ -50,7 +50,6 @@ class PostController extends Controller
         ]);
 
         if ($validator->fails()) {
-
             return response()->json($validator->errors()->toJson(), 400);
         }
         // if (isset($user)) {
@@ -88,10 +87,9 @@ class PostController extends Controller
         $post = Post::find($id);
         if (isset($post)) {
             $post->delete();
-
-            return response()->json(['success' => true, 'message' => 'User deleted successfully']);
+            return response()->json(['success' => true, 'message' => 'Post deleted successfully']);
         } else
 
-            return response()->json('Cannot find selected user', 400);
+            return response()->json('Cannot find selected post', 400);
     }
 }
