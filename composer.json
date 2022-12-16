@@ -5,14 +5,12 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^7.3|^8.1.12",
+        "php": "^7.3|^8.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^3.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.40",
         "laravel/tinker": "^2.5",
-        "pusher/pusher-php-server": "^7.2",
-        "staudenmeir/laravel-merged-relations": "^1.0",
         "tymon/jwt-auth": "*"
     },
     "require-dev": {
