@@ -13,7 +13,8 @@ class Medicine extends Model
     protected $fillable = [
         'medicine_name',
         'medicine_desc',
-        'medicine_photo',
+        'medicine_photo_name',
+        'medicine_photo_path',
         'medicine_price'
     ];
 }

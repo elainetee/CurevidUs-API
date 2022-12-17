@@ -24,17 +24,34 @@ class MedicineController extends Controller
         $request->validate([
             'medicine_name' => 'required',
             'medicine_desc' => 'required',
-            'medicine_price' => 'required'
+            'medicine_price' => 'required',
+            'file' => 'mimes:jpg,jpeg,png|max:2048'
         ]);
-        
-        $medicine = Medicine::create([
-            'medicine_name' => $request->get('medicine_name'),
-            'medicine_desc' => $request->get('medicine_desc'),
-            'medicine_photo' => $request->get('medicine_photo'),
-            'medicine_price' => $request->get('medicine_price')
-        ]);
+        $med = new Medicine;
 
-        return $medicine;
+        if ($request->file()) {
+            $file_name = time() . '_' . $request->file->getClientOriginalName();
+            $file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
+
+            $med->medicine_photo_name = time() . '_' . $request->file->getClientOriginalName();
+            $med->medicine_photo_path = '/storage/' . $file_path;
+            $med->medicine_name = $request->get('medicine_name');
+            $med->medicine_desc = $request->get('medicine_desc');
+            $med->medicine_price = $request->get('medicine_price');
+            $med->save();
+
+            return response()->json(['success' => 'File uploaded successfully.']);
+        } else {
+
+            $medicine = Medicine::create([
+                'medicine_name' => $request->get('medicine_name'),
+                'medicine_desc' => $request->get('medicine_desc'),
+                // 'medicine_photo' => $request->get('medicine_photo'),
+                'medicine_price' => $request->get('medicine_price')
+            ]);
+
+            return $medicine;
+        }
     }
 
     public function update(Request $request, $medicine_id)
@@ -42,7 +59,6 @@ class MedicineController extends Controller
         $medicine = Medicine::find($medicine_id);
         $medicine->update($request->all());
         return $medicine;
-
     }
 
     public function delete($medicine_id)
