@@ -62,3 +62,5 @@ Route::get('medicine/{id}', [MedicineController::class, 'index1']);
 Route::post('medicine/store', [MedicineController::class, 'store']);
 Route::patch('medicine/update/{id}', [MedicineController::class, 'update']);
 Route::delete('medicine/delete/{id}', [MedicineController::class, 'delete']);
+Route::patch('medicine/updatePhoto/{id}', [MedicineController::class, 'deletePhoto']);
+// Route::patch('medicine/testupdatePhoto', [MedicineController::class, 'testdeletePhoto']);

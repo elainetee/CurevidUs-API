@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Medicine;
+use Illuminate\Support\Facades\File;
 
 class MedicineController extends Controller
 {
@@ -65,7 +66,7 @@ class MedicineController extends Controller
 
         $medicine = Medicine::find($medicine_id);
 
-        if ($request->file()) {
+        if ($request->hasFile('file')) {
             $file_name = time() . '_' . $request->file->getClientOriginalName();
             $file_path = $request->file('file')->storeAs('uploads', $file_name, 'public');
 
@@ -94,6 +95,12 @@ class MedicineController extends Controller
             return $medicine;
         }
     }
+    // public function update(Request $request, $medicine_id)
+    // {
+    //     $medicine = Medicine::find($medicine_id);
+    //         $medicine->update($request->all());
+    //         return $medicine;
+    // }
 
     public function delete($medicine_id)
     {
@@ -107,4 +114,46 @@ class MedicineController extends Controller
 
             return response()->json('Cannot find selected medicine', 400);
     }
+
+    public function deletePhoto($medicine_id)
+    {
+        $medicine = Medicine::find($medicine_id);
+        $medPhoto = Medicine::where('medicine_id', $medicine_id)->value(
+            'medicine_photo_name');
+        // echo ('/storage/uploads/' . $medPhoto);
+        if (isset($medicine)) {
+            $medicine->update([
+                'medicine_photo_name' => null,
+                'medicine_photo_path' => null
+            ]);
+
+            if(File::exists(public_path('/storage/uploads/' . $medPhoto))){
+                File::delete(public_path('/storage/uploads/' . $medPhoto));
+            }
+            return response()->json(['success' => true, 'message' => 'Medicine photo deleted successfully']);
+        } else
+
+            return response()->json('Cannot find selected medicine', 400);
+    }
+
+    // public function testdeletePhoto()
+    // {
+    //     // $medicine = Medicine::find($medicine_id);
+    //     // $medPhoto = Medicine::where('medicine_id', $medicine_id)->get([
+    //     //     'medicine_photo_name']);
+
+    //     // if (isset($medicine)) {
+    //     //     $medicine->update([
+    //     //         'medicine_photo_name' => null,
+    //     //         'medicine_photo_path' => null
+    //     //     ]);
+
+    //         if(File::exists(public_path('/storage/uploads/1671288250_Screenshot (2).png'))){
+    //             File::delete(public_path('/storage/uploads/1671288250_Screenshot (2).png'));
+            
+    //         return response()->json(['success' => true, 'message' => 'Medicine photo deleted successfully']);
+    //     } else
+
+    //         return response()->json('Cannot find selected medicine', 400);
+    // }
 }
