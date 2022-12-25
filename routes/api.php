@@ -36,10 +36,14 @@ Route::get('/user', [UserController::class, 'getAuthenticatedUser']);
 //post
 Route::delete('/post/delete/{id}', [PostController::class, 'delete']);
 Route::get('post/{id}', [PostController::class, 'index']);
-Route::get('allpost', [PostController::class, 'allPost']);
+Route::get('publicpost', [PostController::class, 'publicPost']);
+Route::get('allvisiblepost', [PostController::class, 'allVisiblePost']);
+Route::get('allhiddenpost', [PostController::class, 'allHiddenPost']);
+Route::get('friendpost', [PostController::class, 'friendPost']);
 Route::get('specificpost/{id}', [PostController::class, 'findPost']);
 Route::post('post/create/{id}', [PostController::class, 'create']);
 Route::patch('/post/update/{id}', [PostController::class, 'update']);
+Route::patch('/post/hide/{id}', [PostController::class, 'hide']);
 
 //comment
 Route::get('comment/{id}', [CommentController::class, 'index']);
@@ -51,7 +55,9 @@ Route::post('friend/add/{id}', [FriendshipController::class, 'addFriend']);
 Route::post('friend/remove/{id}', [FriendshipController::class, 'removeFriend']);
 Route::post('friend/accept/{id}', [FriendshipController::class, 'acceptFriendRequest']);
 Route::get('friend', [FriendshipController::class, 'friendlist']);
-Route::get('friend/pending', [FriendshipController::class, 'pendingFriendRequest']);
+Route::get('friend/pendingto', [FriendshipController::class, 'pendingFriendRequestTo']);
+Route::get('friend/pendingfrom', [FriendshipController::class, 'pendingFriendRequestFrom']);
+Route::post('friend/search', [FriendshipController::class, 'searchFriend']);
 
 //chat
 Route::get('/chat', [ChatController::class, 'index']);

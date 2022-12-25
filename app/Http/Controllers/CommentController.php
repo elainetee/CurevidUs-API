@@ -13,6 +13,10 @@ class CommentController extends Controller
     public function index($post_id)
     {
         $post = Post::where('id', $post_id)->first();
+        $comments = $post->comment;
+        foreach ($comments as $comment) {
+            $comment->setAttribute('user_name', $comment->user->userName());
+        }
         return $post->comment;
     }
 
@@ -31,6 +35,13 @@ class CommentController extends Controller
                 'user_id' => JWTAuth::user()->id,
                 'comment_body' => $request->comment_body
             ]);
+            // $new = $post->comment;
+            // $new++;
+            // $post->update([
+            //     'comment' => $request->$new,
+            // ]);
+
+
             return response()->json(compact('comment'), 201);
         } else {
             return response()->json('No such post', 400);
