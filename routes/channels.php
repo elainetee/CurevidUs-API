@@ -21,3 +21,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 Broadcast::channel('chat', function ($user) {
     return JWTAuth::check();
 });
+
+Broadcast::channel('privatechat.{receiverid}', function ($user,$receiverid) {
+    return JWTAuth::check();
+});

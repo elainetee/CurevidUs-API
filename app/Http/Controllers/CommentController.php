@@ -7,6 +7,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Models\Post;
 use App\Models\Comment;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class CommentController extends Controller
 {
@@ -29,19 +30,14 @@ class CommentController extends Controller
             return response()->json($validator->errors()->toJson(), 400);
         }
         $post = Post::where('id', $post_id)->first();
+        $count = $post->comment_num;
         if ($post) {
             $comment = Comment::create([
                 'post_id' => $post->id,
                 'user_id' => JWTAuth::user()->id,
                 'comment_body' => $request->comment_body
             ]);
-            // $new = $post->comment;
-            // $new++;
-            // $post->update([
-            //     'comment' => $request->$new,
-            // ]);
-
-
+            $post->increment('comment_num');
             return response()->json(compact('comment'), 201);
         } else {
             return response()->json('No such post', 400);

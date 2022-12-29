@@ -43,7 +43,8 @@ class PostController extends Controller
             $p->setAttribute('duration', Carbon::parse($p['created_at'])->diffForHumans());
             $p->setAttribute('user_name', $p->user->userName());
         }
-        return $filteredpost->toQuery()->simplePaginate(5);
+        // return $filteredpost->toQuery()->simplePaginate(5);
+        return $filteredpost;
     }
 
     public function allHiddenPost()
