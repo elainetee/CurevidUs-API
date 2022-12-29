@@ -9,6 +9,7 @@ class Medicine extends Model
 {
     use HasFactory;
     protected $primaryKey = 'medicine_id';
+    protected $table = 'medicines';
 
     protected $fillable = [
         'medicine_name',
@@ -17,4 +18,11 @@ class Medicine extends Model
         'medicine_photo_path',
         'medicine_price'
     ];
+
+    public function order()
+    {
+        return $this->belongsToMany(Order::class
+        , 'order_medicine', 'medicine_id', 'order_id'
+        );
+    }
 }

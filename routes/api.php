@@ -6,6 +6,7 @@ use App\Http\Controllers\ConditionController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FriendshipController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -64,3 +65,8 @@ Route::patch('medicine/update/{id}', [MedicineController::class, 'update']);
 Route::delete('medicine/delete/{id}', [MedicineController::class, 'delete']);
 Route::patch('medicine/updatePhoto/{id}', [MedicineController::class, 'deletePhoto']);
 // Route::patch('medicine/testupdatePhoto', [MedicineController::class, 'testdeletePhoto']);
+
+//order
+Route::get('order', [OrderController::class, 'index']);
+Route::get('cart/{id}', [OrderController::class, 'cartStatusOrder']);
+Route::post('order/addtocart/{id}', [OrderController::class, 'addToCart']);
