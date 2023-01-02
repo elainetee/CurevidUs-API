@@ -68,5 +68,9 @@ Route::patch('medicine/updatePhoto/{id}', [MedicineController::class, 'deletePho
 
 //order
 Route::get('order', [OrderController::class, 'index']);
-Route::get('cart/{id}', [OrderController::class, 'cartStatusOrder']);
-Route::post('order/addtocart/{id}', [OrderController::class, 'addToCart']);
+Route::get('cart', [OrderController::class, 'medicineInCart']);
+Route::get('checkout', [OrderController::class, 'medicineCheckout']);
+// Route::get('orderCheckout', [OrderController::class, 'checkoutStatusOrder']);
+Route::post('order/addtocart', [OrderController::class, 'addToCart']);
+Route::delete('cartmed/{id}', [OrderController::class, 'dltFromCart']);
+Route::post('checkout', [OrderController::class, 'checkout']);
