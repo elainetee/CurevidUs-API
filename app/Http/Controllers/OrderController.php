@@ -109,7 +109,7 @@ class OrderController extends Controller
     //     return $order;
     // }
 
-    public function addToCart(Request $request)
+    public function addToCart($medId)
     {
         $user = JWTAuth::user();
         $cartIsCreated = $this->cartStatusOrder();
@@ -119,7 +119,7 @@ class OrderController extends Controller
         //     'order_status' => 'required',
         // ]);
         $ldate = date('Y-m-d');
-        $medId = $request->get('medicine_id');
+        // $medId = $request->get('medicine_id');
         $medicine = Medicine::where([
             ['medicine_id', $medId]
         ])->firstOrFail();
@@ -129,7 +129,7 @@ class OrderController extends Controller
 
             $order = Order::create([
                 'order_date' => $ldate,
-                'order_price' => $request->get('order_price'),
+                'order_price' => $medicine->value('medicine_price'),
                 'order_status' => 'cart',
                 'user_id' => $user->id,
             ]);

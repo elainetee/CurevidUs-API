@@ -29,6 +29,6 @@ class Order extends Model
     {
         return $this->belongsToMany(Medicine::class
         , 'order_medicine', 'order_id', 'medicine_id'
-    );
+        )->withTimestamps();;
     }
 }
