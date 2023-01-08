@@ -25,3 +25,7 @@ Broadcast::channel('chat', function ($user) {
 Broadcast::channel('privatechat.{receiverid}', function ($user,$receiverid) {
     return JWTAuth::check();
 });
+
+Broadcast::channel('agora-online-channel', function ($user) {
+    return ['id' => $user->id, 'name' => $user->name];
+});

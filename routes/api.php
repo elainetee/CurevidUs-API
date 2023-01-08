@@ -7,6 +7,7 @@ use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FriendshipController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\AgoraVideoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +64,11 @@ Route::post('friend/search', [FriendshipController::class, 'searchFriend']);
 Route::get('/chat', [ChatController::class, 'index']);
 Route::get('/messages', [ChatController::class, 'fetchMessages']);
 Route::post('/messages', [ChatController::class, 'sendMessage']);
+
+//call
+Route::get('/agora-chat', [AgoraVideoController::class,'index']);
+Route::post('/agora/token', [AgoraVideoController::class,'token']);
+Route::post('/agora/call-user', [AgoraVideoController::class,'callUser']);
 
 //condition
 Route::get('condition/{id}', [ConditionController::class, 'index']);
