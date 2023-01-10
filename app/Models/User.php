@@ -11,7 +11,7 @@ use Staudenmeir\LaravelMergedRelations\Eloquent\HasMergedRelationships;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, HasMergedRelationships;
+    use HasFactory, Notifiable/*, HasMergedRelationships*/;
 
     /**
      * The attributes that are mass assignable.
@@ -76,6 +76,11 @@ class User extends Authenticatable implements JWTSubject
     public function condition()
     {
         return $this->hasMany(Condition::class);
+    }
+
+    public function order()
+    {
+        return $this->hasMany(Order::class);
     }
 
     public function messages()

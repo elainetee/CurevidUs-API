@@ -24,7 +24,7 @@ class ConditionController extends Controller
             'condition_date' => 'required',
             'condition_symptoms' => 'required',
             'temperature' => 'required',
-            'oxygen_lvl' => 'required',
+            // 'oxygen_lvl' => 'required',
             'condition_summary' => 'required'
         ]);
         
