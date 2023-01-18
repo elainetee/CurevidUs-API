@@ -17,7 +17,8 @@ class CreateMedicinesTable extends Migration
             $table->bigIncrements('medicine_id');
             $table->string('medicine_name', 255);
             $table->string('medicine_desc', 255);
-            $table->binary('medicine_photo')->nullable();
+            $table->string('medicine_photo_name')->nullable();
+            $table->string('medicine_photo_path')->nullable();
             $table->double('medicine_price', 8, 2);
             $table->timestamps();
         });

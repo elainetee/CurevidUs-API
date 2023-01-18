@@ -6,6 +6,7 @@ use App\Http\Controllers\ConditionController;
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FriendshipController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\AgoraVideoController;
 use Illuminate\Http\Request;
@@ -81,6 +82,19 @@ Route::post('condition/create/{id}', [ConditionController::class, 'store']);
 
 //medicine
 Route::get('medicine', [MedicineController::class, 'index']);
+Route::get('medicine/{id}', [MedicineController::class, 'index1']);
 Route::post('medicine/store', [MedicineController::class, 'store']);
 Route::patch('medicine/update/{id}', [MedicineController::class, 'update']);
 Route::delete('medicine/delete/{id}', [MedicineController::class, 'delete']);
+Route::patch('medicine/updatePhoto/{id}', [MedicineController::class, 'deletePhoto']);
+// Route::patch('medicine/testupdatePhoto', [MedicineController::class, 'testdeletePhoto']);
+
+//order
+Route::get('order', [OrderController::class, 'index']);
+Route::get('cartmedicine', [OrderController::class, 'medicineInCart']);
+Route::get('medicinecheckout', [OrderController::class, 'medicineCheckout']);
+Route::get('cart', [OrderController::class, 'cartStatusOrder']);
+// Route::get('orderCheckout', [OrderController::class, 'checkoutStatusOrder']);
+Route::post('order/addtocart/{id}', [OrderController::class, 'addToCart']);
+Route::delete('cartmed/{id}', [OrderController::class, 'dltFromCart']);
+Route::post('checkout', [OrderController::class, 'checkout']);
