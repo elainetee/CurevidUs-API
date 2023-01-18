@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Classes\AgoraDynamicKey\RtcTokenBuilder;
 use App\Events\MakeAgoraCall;
 
@@ -14,7 +13,7 @@ class AgoraVideoController extends Controller
     public function index(Request $request)
     {
         // fetch all users apart from the authenticated user
-        $users = User::where('id', '<>', Auth::id())->get();
+        $users = User::where('id', '<>', JWTAuth::user()->id)->get();
         // return view('agora-chat', ['users' => $users]);
         return $users;
     }
@@ -25,7 +24,8 @@ class AgoraVideoController extends Controller
         $appID = env('AGORA_APP_ID');
         $appCertificate = env('AGORA_APP_CERTIFICATE');
         $channelName = $request->channelName;
-        $user = Auth::user()->name;
+        // $user = Auth::user()->name;
+        $user = JWTAuth::user()->name;
         $role = RtcTokenBuilder::RoleAttendee;
         $expireTimeInSeconds = 3600;
         $currentTimestamp = now()->getTimestamp();
@@ -41,7 +41,7 @@ class AgoraVideoController extends Controller
 
         $data['userToCall'] = $request->user_to_call;
         $data['channelName'] = $request->channel_name;
-        $data['from'] = Auth::id();
+        $data['from'] = JWTAuth::user()->id;
 
         broadcast(new MakeAgoraCall($data))->toOthers();
     }

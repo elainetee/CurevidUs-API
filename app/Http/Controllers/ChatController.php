@@ -16,7 +16,7 @@ class ChatController extends Controller
         // $message = Message::where('user_id', $user_id)->orderBy('id', 'DESC')->get();
         $messages = Message::get();
         foreach ($messages as $m) {
-        $m->setAttribute('user_name', $m->user->userName());
+            $m->setAttribute('user_name', $m->user->userName());
         }
         return $messages;
     }
@@ -38,34 +38,42 @@ class ChatController extends Controller
         ]);
     }
 
-    public function sendPrivateMessage(Request $request,User $user)
+    public function sendPrivateMessage(Request $request, $id)
     {
-        if(request()->has('file')){
-            $message=Message::create([
-                'user_id' => request()->user()->id,
-                'receiver_id' => $user->id
-            ]);
-        }else{
-            $input=$request->all();
-            $input['receiver_id']=$user->id;
-            $message=auth()->user()->messages()->create($input);
-        }
+        // if(request()->has('file')){
+        //     $message=Message::create([
+        //         'user_id' => request()->user()->id,
+        //         'receiver_id' => $user->id
+        //     ]);
+        // }else{
+        $input=$request->all();
+        $input['receiver_id']=$id;
+        $message=JWTAuth::user()->messages()->create($input);
 
         broadcast(new PrivateMessageSent($message->load('user')))->toOthers();
-        
-        return response(['status'=>'Message private sent successfully','message'=>$message]);
 
+        return response(['status' => 'Message private sent successfully', 'message' => $message]);
     }
 
-    public function privateMessages(User $user)
+    public function privateMessages($id)
     {
-        $privateCommunication= Message::with('user')
-        ->where(['user_id'=> auth()->id(), 'receiver_id'=> $user->id])
-        ->orWhere(function($query) use($user){
-            $query->where(['user_id' => $user->id, 'receiver_id' => auth()->id()]);
+        // $privateCommunication = Message::with('user')
+        //     ->where(['user_id' => JWTAuth::user()->id(), 'receiver_id' => $id])
+        //     ->orWhere(function ($query) use ($id) {
+        //         $query->where(['user_id' => $id, 'receiver_id' => JWTAuth::user()->id()]);
+        //     })
+        //     ->get();
+        $user = User::find($id)->name;
+        // dd($user);
+        $privateCommunication = Message::where(['user_id' => JWTAuth::user()->id, 'receiver_id' => $id])
+        ->orWhere(function ($query) use ($id) {
+            $query->where(['user_id' => $id, 'receiver_id' => JWTAuth::user()->id]);
         })
         ->get();
-
+        foreach ($privateCommunication as $m) {
+            $m->setAttribute('user_name', $m->user->userName());
+            $m->setAttribute('avatar', $m->user->avatar());
+        }
         return $privateCommunication;
     }
 }

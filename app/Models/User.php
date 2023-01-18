@@ -26,7 +26,8 @@ class User extends Authenticatable implements JWTSubject
         'tel_no',
         'password',
         'quarantine_status',
-        'vac_status'
+        'vac_status',
+        'avatar'
     ];
 
     /**
@@ -76,6 +77,11 @@ class User extends Authenticatable implements JWTSubject
     public function userName()
     {
         return $this->name;
+    }
+
+    public function avatar()
+    {
+        return $this->avatar;
     }
 
     public function condition()
