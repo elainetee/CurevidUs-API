@@ -73,5 +73,5 @@ Route::get('medicinecheckout', [OrderController::class, 'medicineCheckout']);
 Route::get('cart', [OrderController::class, 'cartStatusOrder']);
 // Route::get('orderCheckout', [OrderController::class, 'checkoutStatusOrder']);
 Route::post('order/addtocart/{id}', [OrderController::class, 'addToCart']);
-Route::delete('cartmed/{id}', [OrderController::class, 'dltFromCart']);
+Route::delete('dltcartmed/{id}', [OrderController::class, 'dltFromCart']);
 Route::post('checkout', [OrderController::class, 'checkout']);
