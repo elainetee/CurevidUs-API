@@ -34,7 +34,10 @@ class OrderController extends Controller
             foreach ($order->medicines as $medicines) {
                 // echo $medicines->pivot->medicine_id;
                 $cartMedId = $medicines->pivot->medicine_id;
+                $cartMedQty = $medicines->pivot->quantity;
                 $cartMed = Medicine::find($cartMedId);
+                $cartMed['quantity'] = $cartMedQty;
+                // dd($cartMed);
 
                 $cartMeds->add($cartMed);
             }
@@ -138,7 +141,8 @@ class OrderController extends Controller
                 ['order_status', 'cart'],
             ])->firstOrFail();
 
-            $order->medicines()->attach($medicine);
+            $order->medicines()->attach($medicine, ['quantity' => 1]);
+            
         } else {
             $orderId = $user->order()->where([
                 ['order_status', 'cart'],
@@ -155,10 +159,16 @@ class OrderController extends Controller
                 $order = $user->order()->where([
                     ['order_status', 'cart'],
                 ])->firstOrFail();
-
-                $order->medicines()->attach($medicine);
+                
+                $order->medicines()->attach($medicine, ['quantity' => 1]);
             } else {
-                return response()->json('Medicine already exist in cart', 400);
+                $order = $user->order()->where([
+                    ['order_status', 'cart'],
+                ])->firstOrFail();
+                $quantity = $order->medicines()->first()->pivot->quantity;
+                $order->medicines()->updateExistingPivot($medicine, ['quantity' => $quantity +1]);
+                return response()->json(['success' => true, 'message' => 'Medicine quantity updated in cart']);
+                // return response()->json('Medicine already exist in cart, please add the quantity', 400);
             }
         }
         // echo $order;
