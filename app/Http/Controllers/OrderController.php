@@ -165,7 +165,10 @@ class OrderController extends Controller
                 $order = $user->order()->where([
                     ['order_status', 'cart'],
                 ])->firstOrFail();
-                $quantity = $order->medicines()->first()->pivot->quantity;
+                // $quantity = $order->medicines()->where([
+                //     ['order_medicine.medicine_id', $medId],
+                // ])->first()->pivot->quantity;
+                $quantity = $order->medicines()->firstWhere('order_medicine.medicine_id', $medId)->pivot->quantity;
                 $order->medicines()->updateExistingPivot($medicine, ['quantity' => $quantity +1]);
                 return response()->json(['success' => true, 'message' => 'Medicine quantity updated in cart']);
                 // return response()->json('Medicine already exist in cart, please add the quantity', 400);
@@ -173,6 +176,20 @@ class OrderController extends Controller
         }
         // echo $order;
         return response()->json(['success' => true, 'message' => 'Medicine added to cart successfully']);
+    }
+
+    public function updateQty(Request $request, $medId){
+        $user = JWTAuth::user();
+        $medicine = Medicine::where([
+            ['medicine_id', $medId]
+        ])->firstOrFail();
+
+        $order = $user->order()->where([
+            ['order_status', 'cart'],
+        ])->firstOrFail();
+        // $quantity = $order->medicines()->first()->pivot->quantity;
+        $order->medicines()->updateExistingPivot($medicine, ['quantity' => $request->get('quantity')]);
+        return response()->json(['success' => true, 'message' => 'Medicine quantity updated in cart']);
     }
 
     public function dltFromCart($medicine_id)
