@@ -36,7 +36,9 @@ class OrderController extends Controller
                 $cartMedId = $medicines->pivot->medicine_id;
                 $cartMedQty = $medicines->pivot->quantity;
                 $cartMed = Medicine::find($cartMedId);
+                $medPrice = $cartMed->medicine_price;                
                 $cartMed['quantity'] = $cartMedQty;
+                $cartMed['medTotalPrice'] = $cartMedQty * $medPrice;
                 // dd($cartMed);
 
                 $cartMeds->add($cartMed);
@@ -136,7 +138,7 @@ class OrderController extends Controller
                 'order_status' => 'cart',
                 'user_id' => $user->id,
             ]);
-
+            
             $order = $user->order()->where([
                 ['order_status', 'cart'],
             ])->firstOrFail();
@@ -155,21 +157,35 @@ class OrderController extends Controller
             ])->get();
             // echo $orderMedicine;
 
+            $order = $user->order()->where([
+                ['order_status', 'cart'],
+            ])->firstOrFail();
+
             if ($orderMedicine->isEmpty()) {
-                $order = $user->order()->where([
-                    ['order_status', 'cart'],
-                ])->firstOrFail();
+                // $order = $user->order()->where([
+                //     ['order_status', 'cart'],
+                // ])->firstOrFail();
                 
                 $order->medicines()->attach($medicine, ['quantity' => 1]);
+                
+                $orderPrice = $this->sumUpOrder();
+                $price['order_price'] = $orderPrice;
+                $order->update($price);
+
             } else {
-                $order = $user->order()->where([
-                    ['order_status', 'cart'],
-                ])->firstOrFail();
+                // $order = $user->order()->where([
+                //     ['order_status', 'cart'],
+                // ])->firstOrFail();
                 // $quantity = $order->medicines()->where([
                 //     ['order_medicine.medicine_id', $medId],
                 // ])->first()->pivot->quantity;
                 $quantity = $order->medicines()->firstWhere('order_medicine.medicine_id', $medId)->pivot->quantity;
                 $order->medicines()->updateExistingPivot($medicine, ['quantity' => $quantity +1]);
+                
+                $orderPrice = $this->sumUpOrder();
+                $price['order_price'] = $orderPrice;
+                $order->update($price);
+
                 return response()->json(['success' => true, 'message' => 'Medicine quantity updated in cart']);
                 // return response()->json('Medicine already exist in cart, please add the quantity', 400);
             }
@@ -221,5 +237,11 @@ class OrderController extends Controller
         ]);
 
         return response()->json(['success' => true, 'message' => 'Ordered successfully']);
+    }
+
+    public function sumUpOrder(){
+        $cartMeds = $this->medicineInCart();
+        $orderPrice = $cartMeds->sum('medTotalPrice');
+        return $orderPrice;
     }
 }

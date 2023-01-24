@@ -76,3 +76,4 @@ Route::post('order/addtocart/{id}', [OrderController::class, 'addToCart']);
 Route::post('updateQty/{id}', [OrderController::class, 'updateQty']);
 Route::delete('dltcartmed/{id}', [OrderController::class, 'dltFromCart']);
 Route::post('checkout', [OrderController::class, 'checkout']);
+Route::get('orderTotal', [OrderController::class, 'sumUpOrder']);
