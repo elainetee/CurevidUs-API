@@ -43,6 +43,7 @@ class OrderController extends Controller
 
                 $cartMeds->add($cartMed);
             }
+            // $cartMeds['totalQty'] = $cartMeds->sum('quantity');
             return $cartMeds;
         } else {
             return response()->json('You have not create any order yet', 400);
@@ -205,6 +206,9 @@ class OrderController extends Controller
         ])->firstOrFail();
         // $quantity = $order->medicines()->first()->pivot->quantity;
         $order->medicines()->updateExistingPivot($medicine, ['quantity' => $request->get('quantity')]);
+        $orderPrice = $this->sumUpOrder();
+        $price['order_price'] = $orderPrice;
+        $order->update($price);
         return response()->json(['success' => true, 'message' => 'Medicine quantity updated in cart']);
     }
 
@@ -243,5 +247,11 @@ class OrderController extends Controller
         $cartMeds = $this->medicineInCart();
         $orderPrice = $cartMeds->sum('medTotalPrice');
         return $orderPrice;
+    }
+
+    public function sumUpQty(){
+        $cartMeds = $this->medicineInCart();
+        $totalQty = $cartMeds->sum('quantity');
+        return $totalQty;
     }
 }
