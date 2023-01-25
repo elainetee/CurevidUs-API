@@ -69,12 +69,13 @@ Route::patch('medicine/updatePhoto/{id}', [MedicineController::class, 'deletePho
 //order
 Route::get('order', [OrderController::class, 'index']);
 Route::get('cartmedicine', [OrderController::class, 'medicineInCart']);
-Route::get('medicinecheckout', [OrderController::class, 'medicineCheckout']);
+Route::get('medicinecheckout/{id}', [OrderController::class, 'medicineCheckout']);
 Route::get('cart', [OrderController::class, 'cartStatusOrder']);
-// Route::get('orderCheckout', [OrderController::class, 'checkoutStatusOrder']);
+Route::get('orderCheckout', [OrderController::class, 'checkoutStatusOrder']);
 Route::post('order/addtocart/{id}', [OrderController::class, 'addToCart']);
 Route::post('updateQty/{id}', [OrderController::class, 'updateQty']);
 Route::delete('dltcartmed/{id}', [OrderController::class, 'dltFromCart']);
-Route::post('checkout', [OrderController::class, 'checkout']);
+Route::post('checkout/{id}', [OrderController::class, 'checkout']);
 Route::get('orderTotal', [OrderController::class, 'sumUpOrder']);
 Route::get('totalQty', [OrderController::class, 'sumUpQty']);
+Route::get('totalQty/{id}', [OrderController::class, 'sumUpCheckoutOrderQty']);

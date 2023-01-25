@@ -52,30 +52,34 @@ class OrderController extends Controller
         // return $cartMed;
     }
 
-    public function medicineCheckout()
+    public function medicineCheckout($order_id)
     {
-        $user = JWTAuth::user();
+        // $user = JWTAuth::user();
         // return $user->order()->where('order_status', 'cart')->exists();
-        if ($user->order()->where('order_status', 'checkout')->exists()) {
+        // if ($user->order()->where('order_status', 'checkout')->exists()) {
 
-            $orderId = $user->order()->where([
-                ['order_status', 'checkout'],
-            ])->value('order_id');
+            // $orderId = $user->order()->where([
+            //     ['order_status', 'checkout'],
+            // ])->value('order_id');
 
-            $order = Order::find($orderId);
+            $order = Order::find($order_id);
             $cartMeds = collect();
 
             foreach ($order->medicines as $medicines) {
                 // echo $medicines->pivot->medicine_id;
                 $cartMedId = $medicines->pivot->medicine_id;
+                $cartMedQty = $medicines->pivot->quantity;
                 $cartMed = Medicine::find($cartMedId);
+                $medPrice = $cartMed->medicine_price;                
+                $cartMed['quantity'] = $cartMedQty;
+                $cartMed['medTotalPrice'] = $cartMedQty * $medPrice;
 
                 $cartMeds->add($cartMed);
             }
             return $cartMeds;
-        } else {
-            return response()->json('You have not ordered any medicine yet', 400);
-        }
+        // } else {
+            // return response()->json('You have not ordered any medicine yet', 400);
+        // }
         // return $order;
         // return $cartMed;
     }
@@ -227,12 +231,15 @@ class OrderController extends Controller
         return response()->json(['success' => true, 'message' => 'Medicine removed from cart successfully']);
     }
 
-    public function checkout()
+    public function checkout($order_id)
     {
-        $user = JWTAuth::user();
+        // $user = JWTAuth::user();
         $ldate = date('Y-m-d');
-        $order = $user->order()->where([
-            ['order_status', 'cart'],
+        // $order = $user->order()->where([
+        //     ['order_id', $order_id],
+        // ])->firstOrFail();
+        $order = Order::where([
+            ['order_id', $order_id],
         ])->firstOrFail();
 
         $order->update([
@@ -251,6 +258,12 @@ class OrderController extends Controller
 
     public function sumUpQty(){
         $cartMeds = $this->medicineInCart();
+        $totalQty = $cartMeds->sum('quantity');
+        return $totalQty;
+    }
+
+    public function sumUpCheckoutOrderQty($order_id){
+        $cartMeds = $this->medicineCheckout($order_id);
         $totalQty = $cartMeds->sum('quantity');
         return $totalQty;
     }
