@@ -14,7 +14,7 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $order = Order::all();
+        $order = Order::orderByDesc('order_date')->get();
         return $order;
     }
 
@@ -248,6 +248,18 @@ class OrderController extends Controller
         ]);
 
         return response()->json(['success' => true, 'message' => 'Ordered successfully']);
+    }
+
+    public function updateStatus(Request $request, $order_id){
+        $order = Order::where([
+            ['order_id', $order_id],
+        ])->firstOrFail();
+
+        $order->update([
+            'order_status' => $request->get('order_status')
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Status updated successfully']);
     }
 
     public function sumUpOrder(){

@@ -79,3 +79,4 @@ Route::post('checkout/{id}', [OrderController::class, 'checkout']);
 Route::get('orderTotal', [OrderController::class, 'sumUpOrder']);
 Route::get('totalQty', [OrderController::class, 'sumUpQty']);
 Route::get('totalQty/{id}', [OrderController::class, 'sumUpCheckoutOrderQty']);
+Route::post('updateStatus/{id}', [OrderController::class, 'updateStatus']);
