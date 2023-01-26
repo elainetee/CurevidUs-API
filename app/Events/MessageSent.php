@@ -11,6 +11,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 use App\Models\Message;
+use App\Models\PublicRoom;
 
 class MessageSent implements ShouldBroadcast
 {
@@ -22,9 +23,9 @@ class MessageSent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(User $user, Message $message)
+    public function __construct(PublicRoom $message)
     {
-        $this->user = $user;
+        // $this->user = $user;
         $this->message = $message;
     }
 
@@ -35,6 +36,6 @@ class MessageSent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('chat');
+        return new PrivateChannel('publicchat');
     }
 }

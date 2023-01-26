@@ -28,6 +28,11 @@ Broadcast::channel('privatechat.{receiverid}', function ($user, $receiverid) {
 
 });
 
+Broadcast::channel('publicchat', function ($user) {
+    return ['id' => $user->id, 'name' => $user->name];
+
+});
+
 Broadcast::channel('plchat', function ($user) {
     return ['id' => $user->id, 'name' => $user->name];
     // if (JWTAuth::check()) {

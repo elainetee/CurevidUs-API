@@ -43,7 +43,6 @@ class FriendshipController extends Controller
         DB::table('friendships')->where('user_id', $friend_id)->where('friend_id', $user->id)->update(['accepted' => '1']);
         // return response()->json(['success' => true, 'message' => 'Accepted friend request']);
         return $user->pendingFriendsFrom;
-
     }
 
     public function pendingFriendRequestTo()
@@ -64,18 +63,28 @@ class FriendshipController extends Controller
         return $user->friends;
     }
 
+    public function friendlistmsg()
+    {
+        $user = JWTAuth::user();
+        return $user->friends;
+    }
+
     public function searchFriend(Request $request)
     {
         //friendstatus=1, print 'send msg'
         //friendstatus=2, print 'friend request sent'
         //friendstatus=3, print 'respond friend request'
         //friendstatus=0, print 'add friend'
-
         $userid = JWTAuth::user()->id;
         $user = JWTAuth::user();
         $q = $request->get('input');
-        $users = User::where('name', 'LIKE', '%' . $q . '%')->orWhere('email', 'LIKE', '%' . $q . '%')->get();
-        $newusers = $users->filter(function ($item) {
+        if (!$q) {
+
+            return response()->json('Please search something!', 400);
+        };
+        $users = User::where('name', 'LIKE', '%' . $q . '%')->orWhere('email', 'LIKE', '%' . $q . '%')->where('role_id', '!=', 3)->get();
+        $new=$users->where('role_id', '!=', 3);
+        $newusers = $new->filter(function ($item) {
             $userid = JWTAuth::user()->id;
             return $item->id != $userid;
         })->values();
