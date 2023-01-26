@@ -11,7 +11,9 @@ use Staudenmeir\LaravelMergedRelations\Eloquent\HasMergedRelationships;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, HasMergedRelationships;
+    use HasFactory, Notifiable
+    // , HasMergedRelationships
+    ;
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +28,9 @@ class User extends Authenticatable implements JWTSubject
         'tel_no',
         'password',
         'quarantine_status',
-        'vac_status'
+        'vac_status',
+        'avatar',
+        'quarantine_day',
     ];
 
     /**
@@ -68,9 +72,19 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Post::class);
     }
 
+    public function comment()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function userName()
     {
         return $this->name;
+    }
+
+    public function avatar()
+    {
+        return $this->avatar;
     }
 
     public function condition()
@@ -86,6 +100,11 @@ class User extends Authenticatable implements JWTSubject
     public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+
+    public function publicRooms()
+    {
+        return $this->hasMany(PublicRoom::class);
     }
 
     //friend module

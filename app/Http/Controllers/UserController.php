@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class UserController extends Controller
@@ -27,7 +29,32 @@ class UserController extends Controller
         $user->update($request->all());
 
         return response()->json(compact('user'), 201);
+    }
+    public function uploadPP(Request $request)
+    {
+        $id=JWTAuth::user()->id;
+        $user = User::find($id);
+        $validator = Validator::make($request->all(), [
+            //in kb, so 2mb
+            'avatar' => 'required|image:jpeg,png,jpg|max:2048',
+        ]);
 
+        if ($validator->fails()) {
+
+            return response()->json($validator->errors()->toJson(), 500);
+        }
+        if ($user->avatar !== null && $user->avatar != "")
+            File::delete(public_path($user->avatar));
+        $image = $request->file('avatar');
+        $uploadFolder = 'user_avatar';
+        $image_uploaded_path = $image->store($uploadFolder, 'public');
+        $user->avatar = Storage::url($image_uploaded_path);
+        $user->save();
+        return response()->json([
+            "image_name" => basename($image_uploaded_path),
+            "image_url" => Storage::url($image_uploaded_path),
+            "mime" => $image->getClientMimeType()
+        ]);
     }
 
     public function details($id)

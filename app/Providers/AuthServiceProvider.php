@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Auth;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        // Auth::viaRequest('custom-auth', function ($request) {
+        //     // Any custom user-lookup logic here. For example:
+        //     if ($request->header('x-session')) {
+        //         $user = JWTAuth::user();
+        //         return $user;
+        //     }
+        // });
     }
 }
