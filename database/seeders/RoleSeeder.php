@@ -14,7 +14,7 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        $role= array('patient', 'fam','medical');
+        $role= array('Patient', 'Friend','Medical');
         foreach($role as $index){
             DB::table('roles')->insert([
                  'name' => $index,

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class PostController extends Controller
 {
@@ -30,16 +31,71 @@ class PostController extends Controller
         return $post;
     }
 
-    public function allPost()
+    public function allVisiblePost()
     {
         $posts = Post::orderBy('id', 'DESC')->get();
-        foreach ($posts as $p) {
-            // dd($p->created_at->diffForHumans());
+        $newPosts = $posts->filter(function ($item) {
+            $userid = JWTAuth::user()->id;
+            return $item->user_id != $userid;
+        })->values();
+        $filteredpost = $newPosts->whereNotIn('visibility', 'hidden');
+        foreach ($filteredpost as $p) {
             $p->setAttribute('duration', Carbon::parse($p['created_at'])->diffForHumans());
-            // $p->setAttribute('duration', $p->created_at->diffForHumans());
             $p->setAttribute('user_name', $p->user->userName());
         }
-        return $posts;
+        // return $filteredpost->toQuery()->simplePaginate(5);
+        return $filteredpost;
+    }
+
+    public function allHiddenPost()
+    {
+        $posts = Post::orderBy('id', 'DESC')->get();
+        $newPosts = $posts->filter(function ($item) {
+            $userid = JWTAuth::user()->id;
+            return $item->user_id != $userid;
+        })->values();
+        $filteredpost = $newPosts->whereIn('visibility', 'hidden');
+        foreach ($filteredpost as $p) {
+            $p->setAttribute('duration', Carbon::parse($p['created_at'])->diffForHumans());
+            $p->setAttribute('user_name', $p->user->userName());
+        }
+        return $filteredpost;
+    }
+
+    public function publicPost()
+    {
+        $user = JWTAuth::user();
+        $friends = $user->friends->pluck('id');
+        $posts = Post::orderBy('id', 'DESC')->get();
+        $newPosts = $posts->filter(function ($item) {
+            $userid = JWTAuth::user()->id;
+            return $item->user_id != $userid;
+        })->values();
+        // $id = $helpers->lists('id');
+        $filteredpost = $newPosts->whereNotIn('user_id', $friends)->whereNotIn('visibility', 'hidden');
+        // dd($filteredpost);
+        foreach ($filteredpost as $p) {
+            $p->setAttribute('duration', Carbon::parse($p['created_at'])->diffForHumans());
+            $p->setAttribute('user_name', $p->user->userName());
+        }
+        return $filteredpost;
+    }
+
+    public function friendPost()
+    {
+        $user = JWTAuth::user();
+        $friends = $user->friends->pluck('id');
+        $posts = Post::orderBy('id', 'DESC')->get();
+        $newPosts = $posts->filter(function ($item) {
+            $userid = JWTAuth::user()->id;
+            return $item->user_id != $userid;
+        })->values();
+        $filteredpost = $newPosts->whereIn('user_id', $friends);
+        foreach ($filteredpost as $p) {
+            $p->setAttribute('duration', Carbon::parse($p['created_at'])->diffForHumans());
+            $p->setAttribute('user_name', $p->user->userName());
+        }
+        return $filteredpost;
     }
 
     public function create(Request $request, $user_id)
@@ -50,13 +106,13 @@ class PostController extends Controller
         ]);
 
         if ($validator->fails()) {
-
             return response()->json($validator->errors()->toJson(), 400);
         }
         // if (isset($user)) {
         $post = Post::create([
             'content' => $request->get('content'),
-            'visibility' => $request->get('visibility'),
+            'visibility' => 'public',
+            // 'visibility' => $request->get('visibility'),
             'user_id' => $user_id,
         ]);
         $post->duration = $post->created_at->diffForHumans();
@@ -88,10 +144,29 @@ class PostController extends Controller
         $post = Post::find($id);
         if (isset($post)) {
             $post->delete();
-
-            return response()->json(['success' => true, 'message' => 'User deleted successfully']);
+            return response()->json(['success' => true, 'message' => 'Post deleted successfully']);
         } else
 
-            return response()->json('Cannot find selected user', 400);
+            return response()->json('Cannot find selected post', 400);
+    }
+
+    public function hide($id)
+    {
+        $post = Post::find($id);
+        if (isset($post)) {
+            if ($post->visibility == 'public') {
+                $post->update([
+                    'visibility' => 'hidden',
+                ]);
+                return response()->json(['success' => true, 'message' => 'Post hidden successfully']);
+            } else {
+                $post->update([
+                    'visibility' => 'public',
+                ]);
+            }
+            return response()->json(['success' => true, 'message' => 'Post is changed to public successfully']);
+        } else
+
+            return response()->json('Cannot find selected post', 400);
     }
 }

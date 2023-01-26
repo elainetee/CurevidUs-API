@@ -45,6 +45,9 @@ return [
             'driver' => 'jwt',
             'provider' => 'users',
             'hash' => false,
+            // 'broadcasting' => [
+            //     'driver' => 'custom-auth', 
+            // ],
         ],
     ],
 
