@@ -24,6 +24,7 @@ class UserSeeder extends Seeder
                 'email' => $faker -> companyEmail,
                 'password' => Hash::make($faker -> password),
                 'tel_no' => $faker -> e164PhoneNumber,
+                'quarantine_day' => 0,
             ]);
         }
     }
