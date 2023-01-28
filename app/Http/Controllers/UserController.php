@@ -65,6 +65,14 @@ class UserController extends Controller
         return $user;
     }
 
+    public function getUserWithId($id)
+    {
+        $user = User::firstWhere('id', $id);
+        // $user->role_capitalized = Str::ucfirst($user->role);
+
+        return $user;
+    }
+
     public function index()
     {
         $users = JWTAuth::user();

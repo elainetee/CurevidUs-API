@@ -36,6 +36,7 @@ Route::patch('/user/update/{id}', [UserController::class, 'update']);
 Route::patch('/user/updateprofile/{id}', [UserController::class, 'editProfile']);
 Route::get('/user', [UserController::class, 'getAuthenticatedUser']);
 Route::post('/user/pp', [UserController::class, 'uploadPP']);
+Route::get('/getuser/{id}', [UserController::class, 'getUserWithId']);
 
 //post
 Route::delete('/post/delete/{id}', [PostController::class, 'delete']);
