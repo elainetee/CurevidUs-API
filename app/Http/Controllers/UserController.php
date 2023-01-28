@@ -149,6 +149,7 @@ class UserController extends Controller
             'password' => Hash::make($request->get('password')),
             'role_id' => $request->get('role_id'),
             'tel_no' => $request->get('tel_no'),
+            'quarantine_day' => $request->get('quarantine_day'),
         ]);
         return response()->json([
             'message' => 'User successfully registered',
