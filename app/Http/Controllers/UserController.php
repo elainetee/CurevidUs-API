@@ -65,6 +65,14 @@ class UserController extends Controller
         return $user;
     }
 
+    public function getUserWithId($id)
+    {
+        $user = User::firstWhere('id', $id);
+        // $user->role_capitalized = Str::ucfirst($user->role);
+
+        return $user;
+    }
+
     public function index()
     {
         $users = JWTAuth::user();
@@ -74,6 +82,26 @@ class UserController extends Controller
         }
         // dd( $users);
 
+        return $users;
+    }
+
+    public function indexPatient()
+    {
+        $users = JWTAuth::user();
+        $users = User::where('role_id', '1')->get(['id', 'role_id', 'name', 'email', 'tel_no', 'emergency_contact_person_id', 'quarantine_status', 'vac_status']);
+        foreach ($users as $user) {
+            $user->setAttribute('role_name', $user->role->roleName());
+        }
+        return $users;
+    }
+
+    public function indexMedicStaff()
+    {
+        $users = JWTAuth::user();
+        $users = User::where('role_id', '3')->get(['id', 'role_id', 'name', 'email', 'tel_no', 'emergency_contact_person_id', 'quarantine_status', 'vac_status']);
+        foreach ($users as $user) {
+            $user->setAttribute('role_name', $user->role->roleName());
+        }
         return $users;
     }
 
@@ -143,6 +171,7 @@ class UserController extends Controller
             'password' => Hash::make($request->get('password')),
             'role_id' => $request->get('role_id'),
             'tel_no' => $request->get('tel_no'),
+            'quarantine_day' => $request->get('quarantine_day'),
         ]);
         return response()->json([
             'message' => 'User successfully registered',

@@ -31,11 +31,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('login', [UserController::class, 'authenticate']);
 Route::post('register', [UserController::class, 'register']);
 Route::get('alluser', [UserController::class, 'index']);
+Route::get('allpatient', [UserController::class, 'indexPatient']);
+Route::get('allmedicstaff', [UserController::class, 'indexMedicStaff']);
 Route::delete('/user/{id}', [UserController::class, 'delete']);
 Route::patch('/user/update/{id}', [UserController::class, 'update']);
 Route::patch('/user/updateprofile/{id}', [UserController::class, 'editProfile']);
 Route::get('/user', [UserController::class, 'getAuthenticatedUser']);
 Route::post('/user/pp', [UserController::class, 'uploadPP']);
+Route::get('/getuser/{id}', [UserController::class, 'getUserWithId']);
 
 //post
 Route::delete('/post/delete/{id}', [PostController::class, 'delete']);
@@ -103,3 +106,18 @@ Route::get('orderTotal', [OrderController::class, 'sumUpOrder']);
 Route::get('totalQty', [OrderController::class, 'sumUpQty']);
 Route::get('totalQty/{id}', [OrderController::class, 'sumUpCheckoutOrderQty']);
 Route::post('updateStatus/{id}', [OrderController::class, 'updateStatus']);
+
+// Route::post('reset-password', [AuthController::class, 'sendPasswordResetLink']);
+// Route::post('reset/password', 'AuthController@callResetPassword');
+// reset password
+// Route::prefix('v1')->group(function () {
+    Route::prefix('auth')->group(function () {
+        
+        // Send reset password mail
+        Route::post('reset-password', 'AuthController@sendPasswordResetLink');
+        
+        // handle reset password form process
+        Route::post('reset/password', 'AuthController@callResetPassword');
+        
+    });
+// });
