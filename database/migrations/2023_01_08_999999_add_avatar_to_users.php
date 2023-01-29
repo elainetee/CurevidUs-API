@@ -16,7 +16,7 @@ class AddAvatarToUsers extends Migration
         Schema::table('users', function (Blueprint $table) {
             // if not exist, add the new column
             if (!Schema::hasColumn('users', 'avatar')) {
-                $table->string('avatar');
+                $table->string('avatar')->nullable();
             }
         });
     }
