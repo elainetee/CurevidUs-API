@@ -104,3 +104,18 @@ Route::get('orderTotal', [OrderController::class, 'sumUpOrder']);
 Route::get('totalQty', [OrderController::class, 'sumUpQty']);
 Route::get('totalQty/{id}', [OrderController::class, 'sumUpCheckoutOrderQty']);
 Route::post('updateStatus/{id}', [OrderController::class, 'updateStatus']);
+
+// Route::post('reset-password', [AuthController::class, 'sendPasswordResetLink']);
+// Route::post('reset/password', 'AuthController@callResetPassword');
+// reset password
+// Route::prefix('v1')->group(function () {
+    Route::prefix('auth')->group(function () {
+        
+        // Send reset password mail
+        Route::post('reset-password', 'AuthController@sendPasswordResetLink');
+        
+        // handle reset password form process
+        Route::post('reset/password', 'AuthController@callResetPassword');
+        
+    });
+// });

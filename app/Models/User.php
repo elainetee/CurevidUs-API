@@ -11,9 +11,9 @@ use Staudenmeir\LaravelMergedRelations\Eloquent\HasMergedRelationships;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable
-    , HasMergedRelationships
-    ;
+    use HasFactory,
+        Notifiable,
+        HasMergedRelationships;
 
     /**
      * The attributes that are mass assignable.
@@ -150,5 +150,13 @@ class User extends Authenticatable implements JWTSubject
     public function friends()
     {
         return $this->mergedRelationWithModel(User::class, 'friends_view');
+    }
+
+    /**
+     * Override the mail body for reset password notification mail.
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\MailResetPasswordNotification($token));
     }
 }
