@@ -83,6 +83,26 @@ class UserController extends Controller
         return $users;
     }
 
+    public function indexPatient()
+    {
+        $users = JWTAuth::user();
+        $users = User::where('role_id', '1')->get(['id', 'role_id', 'name', 'email', 'tel_no', 'emergency_contact_person_id', 'quarantine_status', 'vac_status']);
+        foreach ($users as $user) {
+            $user->setAttribute('role_name', $user->role->roleName());
+        }
+        return $users;
+    }
+
+    public function indexMedicStaff()
+    {
+        $users = JWTAuth::user();
+        $users = User::where('role_id', '3')->get(['id', 'role_id', 'name', 'email', 'tel_no', 'emergency_contact_person_id', 'quarantine_status', 'vac_status']);
+        foreach ($users as $user) {
+            $user->setAttribute('role_name', $user->role->roleName());
+        }
+        return $users;
+    }
+
     public function delete($id)
     {
         $user = User::find($id);
