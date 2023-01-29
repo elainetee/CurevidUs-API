@@ -19,6 +19,8 @@ class CreatePostsTable extends Migration
             $table->binary('photo')->nullable();
             $table->string('content');
             $table->string('visibility')->nullable();
+            $table->integer('comment_num')->default('0');
+            $table->integer('like')->default('0');
             $table->timestamps(); 
         });
 
