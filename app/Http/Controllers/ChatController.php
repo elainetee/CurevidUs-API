@@ -9,6 +9,7 @@ use App\Models\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Events\MessageSent;
 use App\Events\PrivateMessageSent;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Crypt;
 
 class ChatController extends Controller
@@ -16,10 +17,10 @@ class ChatController extends Controller
     public function index()
     {
         // $message = Message::where('user_id', $user_id)->orderBy('id', 'DESC')->get();
-
         $messages = PublicRoom::get();
         foreach ($messages as $m) {
-            $m->message = Crypt::decryptString($m->message);
+            $decrypt = Crypt::decryptString($m->message);
+            $m->message = $decrypt;
             $m->setAttribute('user_name', $m->user->userName());
         }
         return $messages;
@@ -34,11 +35,18 @@ class ChatController extends Controller
     {
         $user = JWTAuth::user();
         $encrypted = Crypt::encryptString($request->input('message'));
-        $message = $user->publicRooms()->create([
+        // dd($user->publicRooms());
+        $messagedb = $user->publicRooms()->create([
             'message' => $encrypted
         ]);
+
+        $message = $user->publicRooms()->create([
+            'message' => $request->input('message')
+        ]);
+
         broadcast(new MessageSent($message->load('user')))->toOthers();
-        return response(['status' => 'Public message sent successfully', 'message' => $message]);
+        $message->delete();
+        return response(['status' => 'Message private sent successfully', 'message' => $message]);
     }
 
     public function sendPrivateMessage(Request $request, $id)
@@ -50,14 +58,20 @@ class ChatController extends Controller
         //     ]);
         // }else{
         $input = $request->all();
+        $input['receiver_id'] = $id;
+        $message = JWTAuth::user()->messages()->create($input);
+
+        // encrypt
+        // $input = $request->all();
         // $input['receiver_id'] = $id;
         $encrypted = Crypt::encryptString($request->input('message'));
-        $message = JWTAuth::user()->messages()->create([
+        $messagedb = JWTAuth::user()->messages()->create([
             'message' => $encrypted,
             'receiver_id' => $id,
         ]);
 
         broadcast(new PrivateMessageSent($message->load('user')))->toOthers();
+        $message->delete();
 
         return response(['status' => 'Message private sent successfully', 'message' => $message]);
     }
@@ -78,9 +92,10 @@ class ChatController extends Controller
             })
             ->get();
         foreach ($privateCommunication as $m) {
-            $m->message = Crypt::decryptString($m->message);
+            $decrypt = Crypt::decryptString($m->message);
             $m->setAttribute('user_name', $m->user->userName());
             $m->setAttribute('avatar', $m->user->avatar());
+            $m->message = $decrypt;
         }
         return $privateCommunication;
     }

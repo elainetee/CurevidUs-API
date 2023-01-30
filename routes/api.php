@@ -68,7 +68,7 @@ Route::post('friend/search', [FriendshipController::class, 'searchFriend']);
 
 //chat
 Route::get('/chat', [ChatController::class, 'index']);
-Route::get('/messages', [ChatController::class, 'fetchPublicMessages']);
+// Route::get('/messages', [ChatController::class, 'fetchPublicMessages']);
 Route::post('/messages', [ChatController::class, 'sendPublicMessage']);
 Route::get('/pmessages/{id}', [ChatController::class, 'privateMessages']);
 Route::post('/pmessages/{id}', [ChatController::class, 'sendPrivateMessage']);

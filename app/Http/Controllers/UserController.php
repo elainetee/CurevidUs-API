@@ -76,7 +76,7 @@ class UserController extends Controller
     public function index()
     {
         $users = JWTAuth::user();
-        $users = User::where('role_id', '!=', 3)->get(['id', 'role_id', 'name', 'email', 'tel_no', 'emergency_contact_person_id', 'quarantine_day', 'vac_status']);
+        $users = User::where('role_id', '!=', 3)->get(['id', 'role_id', 'name', 'email', 'tel_no', 'emergency_contact_person_id', 'quarantine_day']);
         foreach ($users as $user) {
             $user->setAttribute('role_name', $user->role->roleName());
         }
